@@ -39,7 +39,7 @@ export PATH="$HOME/.cargo/bin:$PATH" RUSTUP_TOOLCHAIN="$toolchain"
 
 rune=$work/rune
 mkdir "$rune"
-fetch "https://codeload.github.com/anomalyco/rune/tar.gz/$rev" | tar -xz --strip-components=1 -C "$rune"
+fetch "https://codeload.github.com/zce/rune/tar.gz/$rev" | tar -xz --strip-components=1 -C "$rune"
 # The pinned Rune revision already carries the Linux titlebar frame and the
 # org.freedesktop.Notifications backend; the RPM applies no Rune patches.
 # Redirect all Rune crates and vendored patches to the same tree in this container.
