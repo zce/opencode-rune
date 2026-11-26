@@ -55,18 +55,28 @@ pub fn event(app: &App, e: &crate::events::StreamEvent, sid: &str) {
     let root = |id: &str| app.session(id).is_none_or(|s| s.parent.is_none());
     // A muted session plays nothing, as it posts nothing (`notification.tsx`'s `muted`).
     let asker = data["sessionID"].as_str().unwrap_or(sid);
+    // The notification's target: the asker's own tab, else its root's. A subagent's request can
+    // have its own tab while the root has none; checking only the root dropped its sound.
+    let target = if has_tab(asker) { asker } else { app.root_of(asker) };
     if crate::session_menu::preferences::silenced(app, server, sid) || crate::session_menu::preferences::silenced(app, server, asker) {
         return;
     }
     let id = match ty {
         "session.execution.succeeded" if root(sid) && has_tab(sid) => sounds.agent.as_deref(),
         "session.execution.failed" if root(sid) && has_tab(sid) => sounds.errors.as_deref(),
-        "permission.asked" if has_tab(app.root_of(data["sessionID"].as_str().unwrap_or(sid))) => sounds.permissions.as_deref(),
-        "form.created" if has_tab(app.root_of(data["sessionID"].as_str().unwrap_or(sid))) => sounds.questions.as_deref(),
+        "permission.asked" if has_tab(target) => sounds.permissions.as_deref(),
+        "form.created" if has_tab(target) => sounds.questions.as_deref(),
         _ => None,
     };
-    if let Some(id) = id.filter(|_| crate::events::StreamEvent::take(&e.sound, true)) {
-        play(id);
+    if matches!(ty, "session.execution.succeeded" | "session.execution.failed" | "permission.asked" | "form.created") {
+        eprintln!("sounds: {ty} sid={sid} asker={asker} target={target} tab={} sound={id:?}", has_tab(target));
+    }
+    if let Some(id) = id {
+        let take = crate::events::StreamEvent::take(&e.sound, true);
+        eprintln!("sounds: take={take} play={}", if take { id } else { "nothing" });
+        if take {
+            play(id);
+        }
     }
 }
 
