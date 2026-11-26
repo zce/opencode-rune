@@ -53,30 +53,28 @@ pub fn event(app: &App, e: &crate::events::StreamEvent, sid: &str) {
     let server = crate::servers::runtime::active(app);
     let has_tab = |id: &str| app.tabs.iter().any(|t| t.id == id && t.server == *server);
     let root = |id: &str| app.session(id).is_none_or(|s| s.parent.is_none());
+    // The event's session, as the notification reads it: a form carries the asking session under
+    // `form.sessionID`; the outer field is empty on a question.
+    let form = if data["form"].is_object() { &data["form"] } else { data };
+    let asker = form["sessionID"].as_str().or(data["sessionID"].as_str()).unwrap_or(sid);
     // A muted session plays nothing, as it posts nothing (`notification.tsx`'s `muted`).
-    let asker = data["sessionID"].as_str().unwrap_or(sid);
-    // The notification's target: the asker's own tab, else its root's. A subagent's request can
-    // have its own tab while the root has none; checking only the root dropped its sound.
-    let target = if has_tab(asker) { asker } else { app.root_of(asker) };
     if crate::session_menu::preferences::silenced(app, server, sid) || crate::session_menu::preferences::silenced(app, server, asker) {
         return;
     }
+    // The notification's target: the asker's own tab, else its root's. A subagent's request can
+    // have its own tab while the root has none; checking only the root dropped its sound.
+    let target = if has_tab(asker) { asker } else { app.root_of(asker) };
+    let kind = form["metadata"]["kind"].as_str();
     let id = match ty {
         "session.execution.succeeded" if root(sid) && has_tab(sid) => sounds.agent.as_deref(),
         "session.execution.failed" if root(sid) && has_tab(sid) => sounds.errors.as_deref(),
         "permission.asked" if has_tab(target) => sounds.permissions.as_deref(),
-        "form.created" if has_tab(target) => sounds.questions.as_deref(),
+        "form.created" if has_tab(target) && matches!(kind, Some("question" | "mcp-elicitation")) => sounds.questions.as_deref(),
+        "form.created" if has_tab(target) && kind == Some("websearch.provider") => sounds.permissions.as_deref(),
         _ => None,
     };
-    if matches!(ty, "session.execution.succeeded" | "session.execution.failed" | "permission.asked" | "form.created") {
-        eprintln!("sounds: {ty} sid={sid} asker={asker} target={target} tab={} sound={id:?}", has_tab(target));
-    }
-    if let Some(id) = id {
-        let take = crate::events::StreamEvent::take(&e.sound, true);
-        eprintln!("sounds: take={take} play={}", if take { id } else { "nothing" });
-        if take {
-            play(id);
-        }
+    if let Some(id) = id.filter(|_| crate::events::StreamEvent::take(&e.sound, true)) {
+        play(id);
     }
 }
 
@@ -158,9 +156,7 @@ mod platform {
         // install has `pw-play` but not `paplay`, and ALSA's `aplay` may name another sink.
         let players: &[&str] = if cfg!(target_os = "macos") { &["afplay"] } else { &["paplay", "pw-play", "aplay"] };
         for player in players {
-            let status = std::process::Command::new(player).arg(path).stdout(std::process::Stdio::null()).stderr(std::process::Stdio::null()).status();
-            eprintln!("sounds: {player} {} -> {status:?}", path.display());
-            if status.is_ok_and(|s| s.success()) {
+            if std::process::Command::new(player).arg(path).stdout(std::process::Stdio::null()).stderr(std::process::Stdio::null()).status().is_ok_and(|s| s.success()) {
                 return;
             }
         }
