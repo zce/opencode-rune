@@ -116,8 +116,17 @@ pub(crate) fn engine_command(bin: &Path, sock: &Path, profile: &Path, extension_
     }
     // Linux: the GPU the window draws on, whose Vulkan device imports the engine's dmabufs.
     #[cfg(target_os = "linux")]
-    if let Some(node) = crate::dmabuf::device() {
-        cmd.arg("--dmabuf-device").arg(node);
+    match crate::dmabuf::device() {
+        Some(node) => {
+            cmd.arg("--dmabuf-device").arg(node);
+        }
+        None if std::env::var_os("DISPLAY").is_some_and(|display| !display.is_empty()) => {
+            // Without a render node the engine would use Wayland Ozone, whose BGRA frames are
+            // DIP-sized while Rune draws device pixels (a fractional-scale page would come out
+            // small); X11's BGRA frames are at the window scale. XWayland serves Wayland apps.
+            cmd.env_remove("WAYLAND_DISPLAY").env_remove("WAYLAND_SOCKET");
+        }
+        None => {}
     }
     cmd
 }

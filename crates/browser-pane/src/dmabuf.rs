@@ -48,7 +48,30 @@ pub(crate) fn device() -> Option<String> {
         return None;
     }
     let target = import_target()?;
-    Some(target.render_node.unwrap_or_else(|| "/dev/dri/renderD128".into()))
+    let node = target.render_node.unwrap_or_else(|| "/dev/dri/renderD128".into());
+    if nvidia_gbm(&node) {
+        // NVIDIA's proprietary GBM can't make the linear ARGB8888 buffers the engine copies its
+        // frames into (`GBM couldn't make a linear buffer`), and the engine's readback fallback
+        // returns blank frames there. Paint BGRA instead; `engine_command` runs the engine on X11
+        // so those frames are device pixels too.
+        static SAID: std::sync::Once = std::sync::Once::new();
+        SAID.call_once(|| eprintln!("browser: NVIDIA's GBM can't make the engine's dmabufs; painting bgra"));
+        return None;
+    }
+    Some(node)
+}
+
+/// Whether `render_node` is on NVIDIA's proprietary driver, whose GBM has no linear ARGB8888
+/// rendering buffers. `nouveau` and Mesa's NVK share the vendor id but not that limitation, so
+/// the driver symlink decides.
+fn nvidia_gbm(render_node: &str) -> bool {
+    let Some(name) = std::path::Path::new(render_node).file_name().and_then(|name| name.to_str()) else {
+        return false;
+    };
+    std::fs::read_link(format!("/sys/class/drm/{name}/device/driver"))
+        .ok()
+        .and_then(|driver| driver.file_name().map(|name| name.to_string_lossy().into_owned()))
+        .is_some_and(|driver| driver == "nvidia")
 }
 
 /// Tells the engine on `tx` that its dmabufs can't be shown, once per app.
