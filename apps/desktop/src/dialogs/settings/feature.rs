@@ -53,8 +53,8 @@ impl App {
         set_fold_user(self, on);
     }
 
-    pub fn set_scheme(&mut self, scheme: Scheme) {
-        set_scheme(self, scheme);
+    pub fn set_scheme(&mut self, scheme: Scheme, tx: &mut Tx) {
+        set_scheme(self, scheme, tx);
     }
 
     pub fn settings_key(&mut self, ev: &KeyEvent, tx: &mut Tx) -> bool {

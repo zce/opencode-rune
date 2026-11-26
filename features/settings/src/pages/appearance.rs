@@ -112,8 +112,8 @@ fn terminal_changed(s: &mut dyn SettingsHost, tx: &mut Tx) {
     }
 }
 
-fn pick_scheme(s: &mut dyn SettingsHost, id: &str, _tx: &mut Tx) {
-    crate::set_scheme(s, Scheme::parse(id));
+fn pick_scheme(s: &mut dyn SettingsHost, id: &str, tx: &mut Tx) {
+    crate::set_scheme(s, Scheme::parse(id), tx);
 }
 
 fn pick_theme(s: &mut dyn SettingsHost, id: &str, tx: &mut Tx) {
