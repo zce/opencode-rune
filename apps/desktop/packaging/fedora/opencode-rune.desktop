@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=OpenCode (Rune)
+Exec=opencode-rune
+Icon=opencode-rune
+Categories=Development;
+Terminal=false
