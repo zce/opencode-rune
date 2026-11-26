@@ -107,6 +107,18 @@ impl NotificationsHost for App {
         crate::session_menu::preferences::silenced(self, crate::servers::runtime::active(self), session_id)
     }
 
+    fn is_window_focused(&self) -> bool {
+        self.window.focused
+    }
+
+    fn activate_window(&mut self, token: Option<&str>) {
+        let Some(handle) = crate::windows::handle(&self.window.id) else { return };
+        match token {
+            Some(token) => handle.activate(token),
+            None => handle.focus(),
+        }
+    }
+
     fn auto_accepts_permission(&self, session_id: &str) -> bool {
         self.auto_accepts(session_id)
     }
