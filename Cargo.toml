@@ -73,19 +73,19 @@ license = "MIT"
 # Rune's default features less two the app doesn't use: `embedded-fonts` (the app registers its own
 # faces, so Rune's bundled Inter was 1.25 MB nobody drew with) and `ogg-audio` (Ogg and Opus audio
 # for macOS video, which apps/desktop turns on for macOS alone).
-rune = { git = "https://github.com/anomalyco/rune", rev = "5342f14d1ed4ad67939ce391ff08a9410656d96e", default-features = false, features = ["accessibility", "dbus", "metal-backend", "svg"] }
-rune-kit = { git = "https://github.com/anomalyco/rune", rev = "5342f14d1ed4ad67939ce391ff08a9410656d96e" }
-rune-luau = { git = "https://github.com/anomalyco/rune", rev = "5342f14d1ed4ad67939ce391ff08a9410656d96e" }
-rune-mermaid = { git = "https://github.com/anomalyco/rune", rev = "5342f14d1ed4ad67939ce391ff08a9410656d96e" }
-rune-theme-opencode = { git = "https://github.com/anomalyco/rune", rev = "5342f14d1ed4ad67939ce391ff08a9410656d96e" }
-rune-fx = { git = "https://github.com/anomalyco/rune", rev = "5342f14d1ed4ad67939ce391ff08a9410656d96e" }
-rune-i18n = { git = "https://github.com/anomalyco/rune", rev = "5342f14d1ed4ad67939ce391ff08a9410656d96e" }
-procwatch = { git = "https://github.com/anomalyco/rune", rev = "5342f14d1ed4ad67939ce391ff08a9410656d96e" }
-rune-knobs = { git = "https://github.com/anomalyco/rune", rev = "5342f14d1ed4ad67939ce391ff08a9410656d96e" }
-rune-mac = { git = "https://github.com/anomalyco/rune", rev = "5342f14d1ed4ad67939ce391ff08a9410656d96e" }
-rune-notify = { git = "https://github.com/anomalyco/rune", rev = "5342f14d1ed4ad67939ce391ff08a9410656d96e" }
-rune-perf = { git = "https://github.com/anomalyco/rune", rev = "5342f14d1ed4ad67939ce391ff08a9410656d96e" }
-rune-register = { git = "https://github.com/anomalyco/rune", rev = "5342f14d1ed4ad67939ce391ff08a9410656d96e" }
+rune = { git = "https://github.com/anomalyco/rune", rev = "82ec595b5caebeaa17aa51e0da38df3c0a8fb2da", default-features = false, features = ["accessibility", "dbus", "metal-backend", "svg"] }
+rune-kit = { git = "https://github.com/anomalyco/rune", rev = "82ec595b5caebeaa17aa51e0da38df3c0a8fb2da" }
+rune-luau = { git = "https://github.com/anomalyco/rune", rev = "82ec595b5caebeaa17aa51e0da38df3c0a8fb2da" }
+rune-mermaid = { git = "https://github.com/anomalyco/rune", rev = "82ec595b5caebeaa17aa51e0da38df3c0a8fb2da" }
+rune-theme-opencode = { git = "https://github.com/anomalyco/rune", rev = "82ec595b5caebeaa17aa51e0da38df3c0a8fb2da" }
+rune-fx = { git = "https://github.com/anomalyco/rune", rev = "82ec595b5caebeaa17aa51e0da38df3c0a8fb2da" }
+rune-i18n = { git = "https://github.com/anomalyco/rune", rev = "82ec595b5caebeaa17aa51e0da38df3c0a8fb2da" }
+procwatch = { git = "https://github.com/anomalyco/rune", rev = "82ec595b5caebeaa17aa51e0da38df3c0a8fb2da" }
+rune-knobs = { git = "https://github.com/anomalyco/rune", rev = "82ec595b5caebeaa17aa51e0da38df3c0a8fb2da" }
+rune-mac = { git = "https://github.com/anomalyco/rune", rev = "82ec595b5caebeaa17aa51e0da38df3c0a8fb2da" }
+rune-notify = { git = "https://github.com/anomalyco/rune", rev = "82ec595b5caebeaa17aa51e0da38df3c0a8fb2da" }
+rune-perf = { git = "https://github.com/anomalyco/rune", rev = "82ec595b5caebeaa17aa51e0da38df3c0a8fb2da" }
+rune-register = { git = "https://github.com/anomalyco/rune", rev = "82ec595b5caebeaa17aa51e0da38df3c0a8fb2da" }
 base64 = "0.22"
 mlua = { git = "https://github.com/mlua-rs/mlua", rev = "a0ad4535fc72ba89967a931c5be57b162b5f0f3f", features = ["luau"] }
 polling = "3.11"
@@ -103,31 +103,31 @@ libmimalloc-sys = { path = "vendor/libmimalloc-sys" }
 # Rune's wgpu-hal (wgpu-hal as published plus `dx12::Instance::expose_adapter`, partial presents, and
 # removed-device fence handling, `vendor/wgpu-hal` in the Rune repo), at the Rune rev pinned above.
 # Keep the rev equal to the `rune` rev.
-wgpu-hal = { git = "https://github.com/anomalyco/rune", rev = "5342f14d1ed4ad67939ce391ff08a9410656d96e" }
+wgpu-hal = { git = "https://github.com/anomalyco/rune", rev = "82ec595b5caebeaa17aa51e0da38df3c0a8fb2da" }
 # Rune's winit (winit 0.30 as published plus `vendor/winit.patch`: a new Windows window isn't added again
 # to the taskbar it's already on, which cost CoInitializeEx and a TaskbarList COM object on the UI
 # thread before the first frame, and Wayland `content_corner_radius`). Keep the rev equal to the `rune` rev.
-winit = { git = "https://github.com/anomalyco/rune", rev = "5342f14d1ed4ad67939ce391ff08a9410656d96e" }
+winit = { git = "https://github.com/anomalyco/rune", rev = "82ec595b5caebeaa17aa51e0da38df3c0a8fb2da" }
 # Rune's sctk-adwaita (as published plus `vendor/sctk-adwaita.patch`: rounded bottom corners on Wayland
 # client-side frames and `AdwaitaFrame::content_corner_radius`). Keep the rev equal to the `rune` rev.
-sctk-adwaita = { git = "https://github.com/anomalyco/rune", rev = "5342f14d1ed4ad67939ce391ff08a9410656d96e" }
+sctk-adwaita = { git = "https://github.com/anomalyco/rune", rev = "82ec595b5caebeaa17aa51e0da38df3c0a8fb2da" }
 # Rune's accesskit_windows (0.35.2 as published plus `vendor/accesskit_windows.patch`: headings and
 # landmarks reach UI Automation; a field past 64 KiB keeps its text pattern). At the same rev as `rune`.
-accesskit_windows = { git = "https://github.com/anomalyco/rune", rev = "5342f14d1ed4ad67939ce391ff08a9410656d96e" }
+accesskit_windows = { git = "https://github.com/anomalyco/rune", rev = "82ec595b5caebeaa17aa51e0da38df3c0a8fb2da" }
 # Rune's accesskit_macos (0.27.2 as published plus `vendor/accesskit_macos.patch`: headings reach
 # VoiceOver as AppKit's AXHeading with their level; a field past 64 KiB keeps its line ranges). At the same
 # rev as `rune`.
-accesskit_macos = { git = "https://github.com/anomalyco/rune", rev = "5342f14d1ed4ad67939ce391ff08a9410656d96e" }
+accesskit_macos = { git = "https://github.com/anomalyco/rune", rev = "82ec595b5caebeaa17aa51e0da38df3c0a8fb2da" }
 # Rune's parley_engine (0.12.0 as published plus `vendor/parley_engine.patch`: UAX #9 rule L1 at a
 # paragraph's end, so Unicode's BidiTest.txt passes whole; segmenters and font metrics made once,
 # not for every text and run). Keep the rev equal to the `rune` rev.
-parley_engine = { git = "https://github.com/anomalyco/rune", rev = "5342f14d1ed4ad67939ce391ff08a9410656d96e" }
+parley_engine = { git = "https://github.com/anomalyco/rune", rev = "82ec595b5caebeaa17aa51e0da38df3c0a8fb2da" }
 # Rune's naga (30.0.1 as published plus `vendor/naga.patch`: constant-folding an expression to an earlier
 # handle neither stretches nor inverts an `Emit` range, gfx-rs/wgpu#7793; rune#1815). Keep the rev equal to the `rune` rev.
-naga = { git = "https://github.com/anomalyco/rune", rev = "5342f14d1ed4ad67939ce391ff08a9410656d96e" }
+naga = { git = "https://github.com/anomalyco/rune", rev = "82ec595b5caebeaa17aa51e0da38df3c0a8fb2da" }
 # Rune's accesskit_atspi_common (0.21.1 as published plus `vendor/accesskit_atspi_common.patch`: item roles read their
 # own `size_of_set`; rune#1819). Keep the rev equal to the `rune` rev.
-accesskit_atspi_common = { git = "https://github.com/anomalyco/rune", rev = "5342f14d1ed4ad67939ce391ff08a9410656d96e" }
+accesskit_atspi_common = { git = "https://github.com/anomalyco/rune", rev = "82ec595b5caebeaa17aa51e0da38df3c0a8fb2da" }
 yrs = { git = "https://github.com/openooxml/y-crdt.git", rev = "e785c00611ebce79ece115defa25295982cac165" }
 
 # Keep dependencies lean in dev (opt-level = 1 cuts cold build time, RAM, and target/ size
