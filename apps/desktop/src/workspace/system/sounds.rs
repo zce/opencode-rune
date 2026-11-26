@@ -231,7 +231,9 @@ mod platform {
         // install has `pw-play` but not `paplay`, and ALSA's `aplay` may name another sink.
         let players: &[&str] = if cfg!(target_os = "macos") { &["afplay"] } else { &["paplay", "pw-play", "aplay"] };
         for player in players {
-            if std::process::Command::new(player).arg(path).stdout(std::process::Stdio::null()).stderr(std::process::Stdio::null()).status().is_ok_and(|s| s.success()) {
+            let status = std::process::Command::new(player).arg(path).stdout(std::process::Stdio::null()).stderr(std::process::Stdio::null()).status();
+            eprintln!("sounds: {player} {} -> {status:?}", path.display());
+            if status.is_ok_and(|s| s.success()) {
                 return;
             }
         }
