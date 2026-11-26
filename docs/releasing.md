@@ -38,6 +38,18 @@ Each link redirects to the dev channel's current file. Append `/info` to a link 
 
 The Mac and Windows updaters read the bare `<os>-<arch>` ZIP targets. Linux uses manual downloads; its packages are built on Ubuntu 24.04. Set the AppImage's executable bit before launching it (`chmod +x`). The release registry authorizes the artifact and channels; adding a target requires no registry change.
 
+## Local Fedora RPM
+
+```sh
+bash apps/desktop/scripts/package-fedora.sh 0.0.1 /path/to/output
+```
+
+This builds an unsigned RPM in a disposable Fedora 45 Podman container. No host toolchain, checkout mount, install, or publish is involved. The package uses the `opencode-rune` package name and app profile, so it replaces rather than sits alongside another `opencode-rune` RPM if installed. The build uses the `local` channel and keeps the published browser engine's SHA-256 pin.
+
+On Wayland without `xdg-decoration` (including GNOME), the application draws its own 44 pt titlebar row with the window controls in it; it keeps normal decorations on X11 and compositors advertising the protocol. The Fedora build pins the Rune revision that carries that frame and the Linux `org.freedesktop.Notifications` backend (see `Cargo.toml`), so no Rune patches are applied. It does not affect the other Linux packages.
+
+If Fedora's default mirrors are slow, set `OPENCODE_FEDORA_MIRROR` to the HTTPS root of a Fedora mirror, for example `https://mirrors.ustc.edu.cn/fedora/linux`.
+
 ## Comparison with the official desktop
 
 Source: [official release workflow](https://github.com/anomalyco/opencode/blob/38bd73789a43bf043599d6196af96583228035d7/.github/workflows/release.yml) and [desktop publisher](https://github.com/anomalyco/opencode/blob/38bd73789a43bf043599d6196af96583228035d7/.github/release/publish-desktop.sh).
