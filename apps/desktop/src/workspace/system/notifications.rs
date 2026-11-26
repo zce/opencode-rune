@@ -186,7 +186,16 @@ pub fn clicked(_: &mut App, click: &rune_notify::Click) {
 /// Gives a windowed run the app's identity before its window opens.
 #[cfg(not(target_arch = "wasm32"))]
 pub fn identify() {
-    opencode_feature_notifications::identify(&crate::launch::product(), crate::headless());
+    let product = crate::launch::product();
+    #[cfg(target_os = "linux")]
+    if !crate::headless() {
+        // The installed desktop entry's file name, where the notification server finds the app's
+        // icon. The build's own name is what the notification shows.
+        if let Err(e) = rune_notify::register(&rune_notify::Identity::new("opencode-rune", product.name())) {
+            eprintln!("notifications: {e}");
+        }
+    }
+    opencode_feature_notifications::identify(&product, crate::headless());
 }
 
 /// Settles Windows toast registration and starts serving toast activations off the UI thread.
