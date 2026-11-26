@@ -39,6 +39,13 @@ pub trait NotificationsHost: opencode_kernel::AppEnv {
     fn is_window_focused(&self) -> bool {
         rune_notify::app_focused()
     }
+    /// Brings this window forward after a click on one of its notifications. `token` is the
+    /// server's activation token when it sent one (on Wayland the compositor needs it to let
+    /// the window take focus).
+    fn activate_window(&mut self, token: Option<&str>) {
+        let _ = token;
+        rune_notify::bring_to_front();
+    }
     /// Unique identifier of this window, recorded on posted toasts so button clicks route back.
     fn window_id(&self) -> &str {
         ""
