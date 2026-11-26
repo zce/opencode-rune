@@ -218,18 +218,10 @@ pub(crate) fn spec(init: fn() -> App) -> AppSpec<App> {
     }
 }
 
-/// The window/CSD theme the app paints in: its saved appearance scheme, or `--scheme`.
+/// The window/CSD theme the app paints in: the appearance scheme saved in Settings. `Dark` and
+/// `Light` are explicit; `System` is Rune's System, which resolves the desktop's own answer.
 pub(crate) fn window_color_scheme() -> rune::ColorScheme {
-    let scheme = crate::app::arg("--scheme")
-        .map(|value| crate::settings::Scheme::parse(&value))
-        .unwrap_or_else(|| {
-            if crate::app::arg("--fixture").is_some() {
-                crate::settings::Scheme::default()
-            } else {
-                crate::settings::load().scheme
-            }
-        });
-    color_scheme(scheme)
+    color_scheme(crate::settings::load().scheme)
 }
 
 /// Maps the app's appearance scheme to Rune's window/CSD color scheme.
