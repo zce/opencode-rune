@@ -206,15 +206,42 @@ pub(crate) fn spec(init: fn() -> App) -> AppSpec<App> {
     }
 }
 
+/// The window/CSD theme the app paints in: its saved appearance scheme, or `--scheme`.
+pub(crate) fn window_color_scheme() -> rune::ColorScheme {
+    let scheme = crate::app::arg("--scheme")
+        .map(|value| crate::settings::Scheme::parse(&value))
+        .unwrap_or_else(|| {
+            if crate::app::arg("--fixture").is_some() {
+                crate::settings::Scheme::default()
+            } else {
+                crate::settings::load().scheme
+            }
+        });
+    color_scheme(scheme)
+}
+
+/// Maps the app's appearance scheme to Rune's window/CSD color scheme.
+pub(crate) fn color_scheme(scheme: crate::settings::Scheme) -> rune::ColorScheme {
+    match scheme {
+        crate::settings::Scheme::Dark => rune::ColorScheme::Dark,
+        crate::settings::Scheme::Light => rune::ColorScheme::Light,
+        crate::settings::Scheme::System => rune::ColorScheme::System,
+    }
+}
+
 /// The app as it runs: its history, its storybook (⌘⇧D), its window chrome, and Rune's native
 /// Metal backend (`RUNE_GPU_BACKEND=wgpu` draws with wgpu again, no rebuild).
 pub(crate) fn rune_app(spec: AppSpec<App>) -> rune::App<App> {
+    // The CSD frame around the Linux window follows Rune's color scheme; match it to the
+    // appearance scheme the app itself paints in, instead of the system's.
+    let color_scheme = window_color_scheme();
     let app = rune::App::new(spec);
     // Office pages draw their Vello scenes into effect slots, and the new-session Easter egg its
     // pins and lodger; a window without one draws as Rune's default frame does.
     let app = app.compositor(compositor::AppCompositor::default());
     menubar::install(
         app
+            .color_scheme(color_scheme)
             .gpu_backend(rune::GpuBackend::Metal)
             .playground(stories::playground())
             .on_ime(|s, ime, _| s.panels_ime(ime))

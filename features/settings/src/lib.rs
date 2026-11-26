@@ -25,7 +25,7 @@ pub mod types;
 use std::collections::BTreeMap;
 
 use opencode_ui::popup::PopupHost;
-use rune::{Color, Direction, El, Key, KeyEvent, Shadow, TextStyle, Tx, col, row, rule, text};
+use rune::{Color, ColorScheme, Direction, El, Key, KeyEvent, Shadow, TextStyle, Tx, col, row, rule, text};
 use rune_kit::Switch;
 use serde_json::{Value, json};
 use opencode_ui::palette::{Pal, kit};
@@ -552,7 +552,14 @@ pub fn set_notify(host: &mut dyn SettingsHost, kind: NotifyKind, on: bool) {
     change_settings(host, |s| s.notify.set(kind, on));
 }
 
-pub fn set_scheme(host: &mut dyn SettingsHost, scheme: Scheme) {
+pub fn set_scheme(host: &mut dyn SettingsHost, scheme: Scheme, tx: &mut Tx) {
+    // The native window chrome follows the app's scheme at once (`ColorScheme::System` is the
+    // desktop's own, which Rune resolves).
+    tx.set_color_scheme(match scheme {
+        Scheme::System => ColorScheme::System,
+        Scheme::Light => ColorScheme::Light,
+        Scheme::Dark => ColorScheme::Dark,
+    });
     change_settings(host, |s| s.scheme = scheme);
 }
 
