@@ -119,9 +119,9 @@ mod platform {
 
 #[cfg(not(any(target_os = "windows", target_arch = "wasm32")))]
 mod platform {
-    /// The clip through the system's player: `afplay` on macOS, PulseAudio's `paplay` (or ALSA's
-    /// `aplay`) elsewhere. It plays from the app's cache folder, written there on first use; a
-    /// packaged macOS app plays the file in its bundle.
+    /// The clip through the system's player: `afplay` on macOS, PulseAudio's `paplay`, PipeWire's
+    /// `pw-play`, or ALSA's `aplay` elsewhere. It plays from the app's cache folder, written there
+    /// on first use; a packaged macOS app plays the file in its bundle.
     #[cfg(not(bundle_assets))]
     pub fn play(id: &str, wav: &'static [u8]) {
         let Some(dir) = crate::dirs::data().map(|d| d.join("sounds")) else { return };
@@ -144,11 +144,14 @@ mod platform {
     }
 
     fn run(path: &std::path::Path) {
-        let players: &[&str] = if cfg!(target_os = "macos") { &["afplay"] } else { &["paplay", "aplay"] };
+        // PipeWire's own player sits beside PulseAudio's compatibility one: Fedora's Workstation
+        // install has `pw-play` but not `paplay`, and ALSA's `aplay` may name another sink.
+        let players: &[&str] = if cfg!(target_os = "macos") { &["afplay"] } else { &["paplay", "pw-play", "aplay"] };
         for player in players {
             if std::process::Command::new(player).arg(path).stdout(std::process::Stdio::null()).stderr(std::process::Stdio::null()).status().is_ok_and(|s| s.success()) {
                 return;
             }
         }
+        eprintln!("sounds: no player could play {}", path.display());
     }
 }

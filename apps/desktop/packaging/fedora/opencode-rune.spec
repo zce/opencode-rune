@@ -3,7 +3,7 @@ Version: %{rune_version}
 Release: 1%{?dist}
 Summary: OpenCode (Rune) desktop client
 License: MIT
-Requires: libxkbcommon, fontconfig, libwayland-client, libX11, alsa-lib
+Requires: libxkbcommon, fontconfig, libwayland-client, libX11, alsa-lib, pipewire-utils
 BuildRequires: desktop-file-utils
 
 %description
