@@ -13,7 +13,7 @@
 #      and hand-written workspace crates/ (excluding crates/opencode-plugin-spec/src/generated/ and crates/browser-pane/).
 #   9. Pure feature crates under features/*/src/lib.rs forbid unsafe_code (outside explicit FFI/GPU allowlist)
 #  10. Zero `use crate::*;` ambient crate-root wildcard imports in apps/desktop/src/
-#  11. Feature crate naming (opencode-feature-*), workspace manifest completeness, single anomalyco/rune rev pin, and --!strict built-in Luau plugins
+#  11. Feature crate naming (opencode-feature-*), workspace manifest completeness, single Rune rev pin, and --!strict built-in Luau plugins
 # Usage: scripts/arch-check.sh
 set -euo pipefail
 ROOT="$(git rev-parse --show-toplevel)"

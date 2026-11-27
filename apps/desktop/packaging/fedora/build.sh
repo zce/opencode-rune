@@ -39,7 +39,7 @@ export PATH="$HOME/.cargo/bin:$PATH" RUSTUP_TOOLCHAIN="$toolchain"
 
 rune=$work/rune
 mkdir "$rune"
-fetch "https://codeload.github.com/anomalyco/rune/tar.gz/$rev" | tar -xz --strip-components=1 -C "$rune"
+fetch "https://codeload.github.com/zce/rune/tar.gz/$rev" | tar -xz --strip-components=1 -C "$rune"
 # The pinned Rune revision already carries the Linux titlebar frame and the
 # org.freedesktop.Notifications backend; the RPM applies no Rune patches.
 # Redirect all Rune crates and vendored patches to the same tree in this container.
@@ -51,9 +51,9 @@ while read -r name; do
     *) path=crates/$name ;;
   esac
   test -f "$rune/$path/Cargo.toml"
-  sed -i "/^$name = /s@git = \"https://github.com/anomalyco/rune\", rev = \"$rev\"@path = \"$rune/$path\"@" Cargo.toml
-done < <(sed -n '/git = "https:\/\/github.com\/anomalyco\/rune"/s/ .*//p' Cargo.toml)
-sed -i '/^source = "git+https:\/\/github.com\/anomalyco\/rune?/d' Cargo.lock
+  sed -i "/^$name = /s@git = \"https://github.com/zce/rune\", rev = \"$rev\"@path = \"$rune/$path\"@" Cargo.toml
+done < <(sed -n '/git = "https:\/\/github.com\/zce\/rune"/s/ .*//p' Cargo.toml)
+sed -i '/^source = "git+https:\/\/github.com\/zce\/rune?/d' Cargo.lock
 
 # Use the same pinned browser engine as the official Linux build of this source.
 cef=$(grep -A1 '^name = "cef-dll-sys"$' apps/browser-engine/Cargo.lock |

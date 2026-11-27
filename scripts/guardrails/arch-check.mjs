@@ -130,14 +130,14 @@ function checkException(exceptions, rule, src, dst, detail) {
   return false;
 }
 
-// ── Rule 11c (pre-flight): single anomalyco/rune rev pin in root Cargo.toml ──
+// ── Rule 11c (pre-flight): single Rune rev pin in root Cargo.toml ──
 // Check this before `cargo metadata` so a mismatched rev fails fast without a git fetch.
 {
   const rootToml = readText("Cargo.toml");
   const runeRevs = new Map(); // rev -> line numbers
   rootToml.split(/\r?\n/).forEach((line, idx) => {
     const clean = line.split("#")[0];
-    const m = clean.match(/github\.com\/anomalyco\/rune"\s*,[^}]*\brev\s*=\s*"([^"]+)"/);
+    const m = clean.match(/github\.com\/(?:anomalyco|zce)\/rune"\s*,[^}]*\brev\s*=\s*"([^"]+)"/);
     if (m) {
       const list = runeRevs.get(m[1]) ?? [];
       list.push(idx + 1);
@@ -146,7 +146,7 @@ function checkException(exceptions, rule, src, dst, detail) {
   });
   if (runeRevs.size > 1) {
     const summary = [...runeRevs.entries()].map(([rev, ls]) => `${rev} (lines ${ls.join(",")})`).join("; ");
-    console.error(`  ERROR  Cargo.toml: mismatched anomalyco/rune revs across workspace deps/patches: ${summary}`);
+    console.error(`  ERROR  Cargo.toml: mismatched Rune revs across workspace deps/patches: ${summary}`);
     console.error("arch check: 1 error(s)");
     process.exit(1);
   }
