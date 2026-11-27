@@ -40,6 +40,7 @@ Application code only. This repo has no automated tests of any kind, and none ge
   - `cargo check -p session-view --examples`: keep `session-view`'s standalone examples building.
   - `pwsh scripts/web.ps1 -Check`: checks the `wasm32` browser build (`opencode-web`) and runs `scripts/web-clock.ts` to keep `std::time::Instant` and `SystemTime::now` out of the browser build.
 - Fast local loop & profiles: `scripts/dev-fast.sh` / `pwsh scripts/dev-fast.ps1` with Luau `--plugin-hot` (see [`docs/fast-builds.md`](docs/fast-builds.md)); macOS `.app` install via `apps/desktop/scripts/dev.sh` (`apps/desktop/scripts/bundle.sh` / `scripts/mac-app`).
+- **Linux builds run in Podman:** compile and package inside containers (`apps/desktop/scripts/package-fedora.sh` for the RPM, and a Fedora container for compile checks or the browser engine) instead of installing Rust toolchains, CEF downloads, or `*-devel` packages on the host. Keep caches in named volumes or the container filesystem; do not let `mise`/`rustup` auto-install a project toolchain on the host.
 - Convention: keep personal paths (`/Users/<real-name>`), tailnet hostnames (`*.ts.net`, except `*.example.ts.net`), real session IDs, and credentials out of code, scripts, and commits.
 
 ## Official app
